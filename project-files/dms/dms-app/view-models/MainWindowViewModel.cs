@@ -7,6 +7,7 @@ using System.Windows.Input;
 
 using dms.tools;
 using Microsoft.Win32;
+using dms.view_models.quality_analysis_view_models;
 
 namespace dms.view_models
 {
@@ -18,11 +19,13 @@ namespace dms.view_models
             IsLearnPaneVisible = true;
             createTask = new ActionHandler(ShowCreateTaskDialog, e => true);
             showScenarios = new ActionHandler(ShowLearningScenariosManager, e => true);
+            qualityAnalysis = new ActionHandler(ShowQualityAnalysisManager, e => true);
             exportSystem = new ActionHandler(ShowExportSystemDialog, e => true);
             importSystem = new ActionHandler(ShowImportSystemDialog, e => true);
         }
 
         public event EventHandler<EventArgs<TaskCreationViewModel>> requestTaskCreation;
+        public event Action<QualityAnalysisManagerViewModel> requestQAShow;
         public event Action<bool> requestTaskTreeShow;
         public event Action<bool> requestLearnPaneShow;
         public event Action<bool> requestImportSystem;
@@ -72,6 +75,10 @@ namespace dms.view_models
         {
             get { return showScenarios; }
         }
+        public ICommand ShowQualityAnalysisManagerCommand
+        {
+            get { return qualityAnalysis; }
+        }
 
         public void ShowCreateTaskDialog()
         {
@@ -111,10 +118,17 @@ namespace dms.view_models
             requestLSShow?.Invoke(t);
         }
 
+        public void ShowQualityAnalysisManager()
+        {
+            QualityAnalysisManagerViewModel t = new QualityAnalysisManagerViewModel();
+            requestQAShow?.Invoke(t);
+        }
+
         private ActionHandler showScenarios;
         private ActionHandler createTask;
         private ActionHandler exportSystem;
         private ActionHandler importSystem;
+        private ActionHandler qualityAnalysis;
         private bool isTaskTreeVisible;
         private bool isLearnPaneVisible;
     }

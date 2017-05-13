@@ -31,6 +31,9 @@
                     <Button Width="65" Margin="5" Command="{Binding ShowImportSystemDialogCommand}">
                         <TextBlock Text="Импорт системы" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
+                    <Button Width="65" Margin="5" Command="{Binding ShowQualityAnalysisManagerCommand}">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Анализ"/><Run Text=" "/><Run Text="качества"/></TextBlock>
+                    </Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Вид">

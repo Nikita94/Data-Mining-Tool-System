@@ -119,6 +119,9 @@
     <Compile Include="gui\LearnProcessPage.xaml.cs">
       <DependentUpon>LearnProcessPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="gui\quality analysis view\CreateQualityAnalysisPage.xaml.cs">
+      <DependentUpon>CreateQualityAnalysisPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="gui\scenario view\GeneticParams.xaml.cs">
       <DependentUpon>GeneticParams.xaml</DependentUpon>
     </Compile>
@@ -238,6 +241,7 @@
     <Compile Include="tools\EventArgs.cs" />
     <Compile Include="tools\IDocumentContent.cs" />
     <Compile Include="view-models\LearningProcessViewModel.cs" />
+    <Compile Include="view-models\quality analysis view models\QualityAnalysisManagerViewModel.cs" />
     <Compile Include="view-models\solution view models\CreateSolutionViewModel.cs" />
     <Compile Include="view-models\scenario view model\LearningScenarioManagerViewModel.cs" />
     <Compile Include="view-models\selection view models\SelectionLearnStatisticViewModel.cs" />
@@ -292,6 +296,10 @@
     <Compile Include="view-models\tree-section\WardTree.cs" />
     <Compile Include="view-models\ViewmodelBase.cs" />
     <Page Include="gui\LearnProcessPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="gui\quality analysis view\CreateQualityAnalysisPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -435,6 +443,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gui\TaskDirectoryPage.xaml.cs">
@@ -482,6 +494,7 @@
       <Name>dms-solvers</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

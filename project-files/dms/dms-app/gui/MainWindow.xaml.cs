@@ -17,6 +17,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 using dms.view_models;
 using dms.tools;
+using dms.gui.quality_analysis_view;
 
 namespace dms.gui
 {
@@ -44,6 +45,7 @@ namespace dms.gui
             vm.requestTaskTreeShow += (v) => SetPropertyWindowVisibility(v, taskPanel, taskPanelPane);
             vm.requestLearnPaneShow += (v) => SetPropertyWindowVisibility(v, learnPanel, learnPanelPane);
             vm.requestLSShow += (e) => { var p = new LearningScenarioManagerPage(e); p.OnShowPage += ShowPage; ShowPage("Сценарии обучения", p); };
+            vm.requestQAShow += (e) => { var p = new CreateQualityAnalysisPage(e); p.OnShowPage += ShowPage; ShowPage("Анализ качества", p); };
             vm.requestImportSystem += (v) =>
             {
                 if (v)
