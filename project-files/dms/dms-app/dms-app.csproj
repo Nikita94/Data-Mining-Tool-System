@@ -241,6 +241,7 @@
     <Compile Include="tools\EventArgs.cs" />
     <Compile Include="tools\IDocumentContent.cs" />
     <Compile Include="view-models\LearningProcessViewModel.cs" />
+    <Compile Include="view-models\quality analysis view models\DataGridColumnsBehavior.cs" />
     <Compile Include="view-models\quality analysis view models\QualityAnalysisManagerViewModel.cs" />
     <Compile Include="view-models\solution view models\CreateSolutionViewModel.cs" />
     <Compile Include="view-models\scenario view model\LearningScenarioManagerViewModel.cs" />

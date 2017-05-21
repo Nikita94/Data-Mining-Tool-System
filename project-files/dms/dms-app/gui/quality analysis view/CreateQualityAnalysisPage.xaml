@@ -2,10 +2,17 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:bh="clr-namespace:dms.view_models.quality_analysis_view_models"
              xmlns:local="clr-namespace:dms.gui.quality_analysis_view"
              mc:Ignorable="d">
-    <StackPanel>
-      
+    <StackPanel Height="659" Width="845">
+        <Grid>
+            <DataGrid ItemsSource="{Binding myDataCollectionOnMyViewModel}" 
+                    bh:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}">
+            </DataGrid>
+        </Grid>
+
     </StackPanel>
 </UserControl>
