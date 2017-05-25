@@ -237,6 +237,8 @@
     <Compile Include="services\preprocessing\Preprocessing.cs" />
     <Compile Include="services\preprocessing\PreprocessingHelper.cs" />
     <Compile Include="services\preprocessing\PreprocessingManager.cs" />
+    <Compile Include="view-models\quality analysis view models\CheckableObservableCollection.cs" />
+    <Compile Include="view-models\quality analysis view models\CheckWrapper.cs" />
     <Compile Include="tools\ActionHandler.cs" />
     <Compile Include="tools\EventArgs.cs" />
     <Compile Include="tools\IDocumentContent.cs" />
@@ -470,6 +472,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="dms" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -495,7 +499,9 @@
       <Name>dms-solvers</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="services\quality\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

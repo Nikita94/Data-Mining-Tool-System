@@ -27,7 +27,7 @@ namespace dms.gui.quality_analysis_view
         {
             InitializeComponent();
             DataContext = vm;
-            vm.requestShowQualityAnalysis += (p) => { var t = new CreateQualityAnalysisPage(p); OnShowPage?.Invoke("Качество обучения", t); };
+            //vm.requestShowQualityAnalysis += (p) => { var t = new CreateQualityAnalysisPage(p); OnShowPage?.Invoke("Качество обучения", t); };
         }
     }
 }

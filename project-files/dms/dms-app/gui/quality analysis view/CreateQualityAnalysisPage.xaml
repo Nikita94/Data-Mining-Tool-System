@@ -5,14 +5,27 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:bh="clr-namespace:dms.view_models.quality_analysis_view_models"
-             xmlns:local="clr-namespace:dms.gui.quality_analysis_view"
              mc:Ignorable="d">
     <StackPanel Height="659" Width="845">
-        <Grid>
-            <DataGrid ItemsSource="{Binding myDataCollectionOnMyViewModel}" 
-                    bh:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}">
-            </DataGrid>
-        </Grid>
-
+        <ListBox ItemsSource="{Binding Tasks}" Margin="4" SelectionMode="Extended">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Name="tasks" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="3" VerticalAlignment="Center" />
+                        <ContentPresenter Content="{Binding Value}" Margin="1"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox ItemsSource="{Binding Selections}" Margin="4" SelectionMode="Extended">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Name="selections" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="3" VerticalAlignment="Center" />
+                        <ContentPresenter Content="{Binding Value}" Margin="1"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </StackPanel>
 </UserControl>
