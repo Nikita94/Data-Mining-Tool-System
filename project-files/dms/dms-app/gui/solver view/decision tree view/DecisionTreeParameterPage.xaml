@@ -7,10 +7,6 @@
              mc:Ignorable="d" Width="326" HorizontalAlignment="Left">
     <StackPanel HorizontalAlignment="Left" Width="325">
         <StackPanel Orientation="Horizontal" Margin="5">
-            <Label Content="Максимальная глубина дерева:"/>
-            <TextBox x:Name="textBox" TextWrapping="Wrap" Width="156" Text="{Binding MaxTreeDepth}"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="5">
             <Label Content="Количество входных параметров:"/>
             <TextBox x:Name="InputsTextBox" TextWrapping="Wrap" Width="146" Text="{Binding Inputs}"/>
         </StackPanel>

@@ -248,16 +248,16 @@ namespace dms.view_models
             List<string> curOutputValues = new List<string>();
             foreach (var item in SolvingList)
             {
-                curOutputValues.Add(Convert.ToString(isolver.Solve(item.X.Select(x => float.Parse(x.Value)).ToArray())[0]));
+                curOutputValues.Add(Convert.ToString(isolver.Solve(item.X.Select(x => float.Parse(x.Value.Replace(".", ","))).ToArray())[0]));
             }
             PreprocessingManager preprocessing = new PreprocessingManager();
             outputValues = preprocessing.getAppropriateValuesAfterInversePreprocessing(curOutputValues, SelectionID, ParameterID);
+            int i = 0;
+            // Change when there is support for multiple outputs
             foreach (var item in SolvingList)
             {
-                for (int i = 0; i < item.Y.Count; i++)
-                {
-                    item.Y[i] = outputValues[i];
-                }                
+                item.Y[0] = outputValues[i];
+                i++;
             }
         }
         public List<string> outputValues { get; set; }

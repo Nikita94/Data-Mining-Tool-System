@@ -37,7 +37,7 @@ namespace dms.models
             return this;
         }
 
-        public Query addCondition(string key, string op, string value)
+        public Query addCondition(string key, string op, string value, string typeCond = "AND")
         {
             if (conditionString == "")
             {
@@ -45,7 +45,20 @@ namespace dms.models
             }
             else
             {
-                conditionString += " AND " + key + op + "'" + value + "'";
+                conditionString += " " + typeCond + " " + key + op + "'" + value + "'";
+            }
+            return this;
+        }
+
+        public Query addInArray(string key, Array array)
+        {
+            if (conditionString == "")
+            {
+                conditionString = key + " IN (" + SQLArrayToInString(array) + ")";
+            }
+            else
+            {
+                conditionString += " AND " + key +  "IN (" + SQLArrayToInString(array) + ")";
             }
             return this;
         }
@@ -142,6 +155,15 @@ namespace dms.models
                 statementForDatabase += " WHERE " + conditionString;
             }
             return statementForDatabase;
+        }
+
+        private string SQLArrayToInString(Array a)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < a.Length; i++)
+                sb.AppendFormat("'{0}',", a.GetValue(i));
+            string retVal = sb.ToString();
+            return retVal.Substring(0, retVal.Length - 1);
         }
     }
 }

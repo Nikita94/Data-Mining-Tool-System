@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using dms.solvers;
 using dms.solvers.neural_nets;
+using dms.solvers.neural_nets.kohonen;
 using dms.services.preprocessing;
-using dms.solvers.decision_tree;
 
 namespace dms.view_models.solver_view_models
 {
@@ -79,7 +79,7 @@ namespace dms.view_models.solver_view_models
                 LearningAlgoManager la = new LearningAlgoManager()
                 {
                     usedAlgo = LS.LearningAlgorithmName,
-                    GeneticParams = LS.LAParameters
+                    LAParams = LS.LAParameters
 
                 };
                 PreprocessingManager preprocessing = new PreprocessingManager();
@@ -87,11 +87,24 @@ namespace dms.view_models.solver_view_models
                 int sizeTrainDataset = trainInputDataset.Length;
                 List<string> expectedOutputValues = trainOutputDataset.Select(x => Convert.ToString(x)).ToList();
                 List<string> obtainedOutputValues = new List<string>();
+
+                if (ISolver is KohonenManaged)
+                {
+                    KohonenManaged koh = ISolver as KohonenManaged;
+                    koh.startLogWinners();
+                }
                 for (int i = 0; i < sizeTrainDataset; i++)
                 {
                     obtainedOutputValues.Add(Convert.ToString(ISolver.Solve(trainInputDataset[i])[0]));
                 }
                 List<bool> comparisonOfResult = preprocessing.compareExAndObValues(expectedOutputValues, obtainedOutputValues, SelectionID, ParameterID);
+                if (ISolver is KohonenManaged)
+                {
+                    KohonenManaged koh = ISolver as KohonenManaged;
+                    koh.stopLogWinners();
+                    koh.declareWinnersOutput(comparisonOfResult);
+                }
+
                 var counts = comparisonOfResult.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
                 kMistakeTrain = (float)counts[false] / (float)sizeTrainDataset;
 
@@ -130,34 +143,46 @@ namespace dms.view_models.solver_view_models
             Array.Copy(InputData, sizeTrainDataset, testInputDataset, 0, sizeTestDataset);
             Array.Copy(OutputData, trainOutputDataset, sizeTrainDataset);
             Array.Copy(OutputData, sizeTrainDataset, testOutputDataset, 0, sizeTestDataset);
-
-            if (ISolver is INeuralNetwork)
+            
+            LearningAlgoManager la = new LearningAlgoManager()
             {
-                LearningAlgoManager la = new LearningAlgoManager()
-                {
-                    usedAlgo = LS.LearningAlgorithmName,
-                    GeneticParams = LS.LAParameters
+                usedAlgo = LS.LearningAlgorithmName,
+                LAParams = LS.LAParameters
 
-                };
-                ClosingError = la.startLearn(ISolver, trainInputDataset, trainOutputDataset);
-            }
-            else if (ISolver is DecisionTree)
-            {
-                DecisionTreeLearning la = new DecisionTreeLearning();
-                ClosingError = la.startLearn(ISolver, trainInputDataset, trainOutputDataset);
-            }
-
+            };
+            ClosingError = la.startLearn(ISolver, trainInputDataset, trainOutputDataset);
+            
             PreprocessingManager preprocessing = new PreprocessingManager();
             mistakeTrain = 0;
             List<string> expectedOutputValues = trainOutputDataset.Select(x => Convert.ToString(x)).ToList();
             List<string> obtainedOutputValues = new List<string>();
+
+            if (ISolver is KohonenManaged)
+            {
+                KohonenManaged koh = ISolver as KohonenManaged;
+                koh.startLogWinners();
+            }
             for (int i = 0; i < sizeTrainDataset; i++)
             {
                 obtainedOutputValues.Add(Convert.ToString(ISolver.Solve(trainInputDataset[i])[0]));
             }
             List<bool> comparisonOfResult = preprocessing.compareExAndObValues(expectedOutputValues, obtainedOutputValues, SelectionID, ParameterID);
+            if (ISolver is KohonenManaged)
+            {
+                KohonenManaged koh = ISolver as KohonenManaged;
+                koh.stopLogWinners();
+                koh.declareWinnersOutput(comparisonOfResult);
+            }
+
             var counts = comparisonOfResult.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-            mistakeTrain = (float)counts[false] / (float)sizeTrainDataset;
+            if (counts.ContainsKey(false))
+            {
+                mistakeTrain = (float)counts[false] / (float)sizeTrainDataset;
+            }
+            else
+            {
+                mistakeTrain = 0;
+            }
 
             mistakeTest = 0;
             expectedOutputValues = testOutputDataset.Select(x => Convert.ToString(x)).ToList();
@@ -168,7 +193,12 @@ namespace dms.view_models.solver_view_models
             }
             comparisonOfResult = preprocessing.compareExAndObValues(expectedOutputValues, obtainedOutputValues, SelectionID, ParameterID);
             counts = comparisonOfResult.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-            mistakeTest = (float)counts[false] / (float)sizeTestDataset;
+            if (counts.ContainsKey(false))
+            {
+                mistakeTest = (float)counts[false] / (float)sizeTestDataset;
+            }
+            else
+                mistakeTest = 0;
 
             return ISolver;
         }

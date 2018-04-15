@@ -56,7 +56,7 @@ namespace dms.services.preprocessing.normalization
             {
                 if (Math.Abs(val - temp) < 1e-10)
                 {
-                    return (float)(step / 2.0 + i * step);
+                    return (float) (xLeft + (xRight - xLeft) * step / 2.0 + i * step * (xRight - xLeft));
                 }
                 temp++;
             }
@@ -66,7 +66,7 @@ namespace dms.services.preprocessing.normalization
         public float GetNonlinearNormalizedFloat(string value)
         {
             float val = GetInt(value);
-            return (float)(1 / (Math.Exp(-a * (val - centerValue)) + 1));
+            return (float)((xRight - xLeft) / (Math.Exp(-a * (val - centerValue)) + 1) + xLeft);
         }
 
         public int GetNormalizedInt(string value)
@@ -81,27 +81,38 @@ namespace dms.services.preprocessing.normalization
 
         public string GetFromLinearNormalized(float value)
         {
-            float step = (float)1.0 / (2 * countClasses);
+            float step = (float)((xRight - xLeft) * 1.0 / (2 * countClasses));
 
-            if (value <= 0.0)
-                value = step;
-            else if (value >= 1.0)
-                value = 1 - step;
-
+            if (value <= xLeft)
+                value = xLeft + step;
+            else if (value >= xRight)
+                value = xRight - step;
+            value -= xLeft;
             value -= step;
-            value = value * countClasses;
+            value = value * countClasses / (xRight - xLeft);
             return classes[Convert.ToInt32(value)];
         }
 
         public string GetFromNonlinearNormalized(float value)
         {
-            if (value < 0.0f)
-                value = 0.0f;
-            else if (value > 1.0f)
-                value = 1.0f;
+            if (value < xLeft)
+                value = xLeft;
+            else if (value > xRight)
+                value = xRight;
 
-            float output = (float)(centerValue - 1 / a * Math.Log(1 / value - 1));
+            float output = (float)(centerValue - 1 / a * Math.Log((xRight - xLeft) / (value - xLeft) - 1));
             return classes[Convert.ToInt32(output)];
+        }
+
+        public void setRange(float left, float right)
+        {
+            xLeft = left;
+            xRight = right;
+        }
+
+        public void setParam(float param)
+        {
+            a = param;
         }
 
         private float centerValue;
@@ -109,5 +120,6 @@ namespace dms.services.preprocessing.normalization
         private readonly int countClasses;
         private int countNumbers;
         private readonly List<string> classes;
+        private float xLeft = 0, xRight = 1;
     }
 }

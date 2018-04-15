@@ -6,6 +6,29 @@
              xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:local="clr-namespace:dms.gui.scenario_view"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <DataTemplate x:Key="geneticTemplate">
+            <local:GeneticParams x:Name="GenParams"/>
+        </DataTemplate>
+        <DataTemplate x:Key="vectQuantum">
+            <local:VectorQvantum/>
+        </DataTemplate>
+        <DataTemplate x:Key="selfOrganize">
+            <local:SelfOrganizer/>
+        </DataTemplate>
+        <DataTemplate x:Key="backPropParams">
+            <local:BackPropParams x:Name="BackPropParams"/>
+        </DataTemplate>
+        <DataTemplate x:Key="undefined">
+            <Label Content="Здесь могли быть ваши параметры"/>
+        </DataTemplate>
+        <DataTemplate x:Key="decisionTreeCartTemplate">
+            <local:DTCartParams x:Name="DTCartParams"/>
+        </DataTemplate>
+        <DataTemplate x:Key="decisionTreeC45Template">
+            <local:DTCartParams x:Name="DTC45Params"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <StackPanel>
         <Grid Height="163">
             <Grid.RowDefinitions>
@@ -30,7 +53,32 @@
             <ComboBox ItemsSource="{Binding TeacherTypesList}" SelectedItem="{Binding TeacherType}" Grid.Row="3" Grid.Column="1" Margin="5,39,5,-29"/>
         </Grid>
         <GroupBox Header="Параметры алгоритма обучения">
-            <local:GeneticParams x:Name="GenParams"/>
+            <ContentControl Content="{Binding ParamsViewModel}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="Генетический алгоритм">
+                                <Setter Property="ContentTemplate" Value="{StaticResource geneticTemplate}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="Векторное квантование">
+                                <Setter Property="ContentTemplate" Value="{StaticResource vectQuantum}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="Обратное распространение ошибки">
+                                <Setter Property="ContentTemplate" Value="{StaticResource backPropParams}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="Самоорганизация Кохонена">
+                                <Setter Property="ContentTemplate" Value="{StaticResource selfOrganize}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="CART">
+                                <Setter Property="ContentTemplate" Value="{StaticResource decisionTreeCartTemplate}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TeacherType}" Value="C4.5">
+                                <Setter Property="ContentTemplate" Value="{StaticResource decisionTreeC45Template}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
         </GroupBox>
         <StackPanel Orientation="Horizontal" CanVerticallyScroll="True">
             <Button Content="Создать" Command="{Binding CreateCommand}" Margin="5" Width="100"/>

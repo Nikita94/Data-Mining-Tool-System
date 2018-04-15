@@ -125,7 +125,7 @@ namespace dms.gui
             ConvNNInfoPage t = new ConvNNInfoPage(obj);
             OnShowPage?.Invoke(obj.TaskName + "/" + obj.Name + "/Информация", t);
         }
-
+        
         private void CreateDecisionTreeInfoPage(DecisionTreeInfoViewModel obj)
         {
             DecisionTreeInfoPage t = new DecisionTreeInfoPage(obj);

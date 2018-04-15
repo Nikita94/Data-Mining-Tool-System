@@ -82,6 +82,9 @@ namespace dms.view_models
             public int Id { get; set; }
         }
 
+        public float rightRangeValue;
+        public float leftRangeValue;
+
         public Pair BaseTemplate { get; set; }
         public Pair PerformedTemplate { get; set; }
 
@@ -96,6 +99,10 @@ namespace dms.view_models
 
         public PreprocessingViewModel(models.Task task, int templateId)
         {
+            IntervalNameA = "A = ";
+            IntervalNameB = "B = ";
+            //Параметр влияет на степень нелинейности изменения переменной в нормализуемом интервале
+            AName = "(Параметр нормализации) a = ";
             Task = task;
             List<Entity> taskTemplates = TaskTemplate.where(new Query("TaskTemplate").addTypeQuery(TypeQuery.select)
                 .addCondition("TaskID", "=", task.ID.ToString()), typeof(TaskTemplate));
@@ -192,6 +199,17 @@ namespace dms.view_models
 
         public void Create()
         {
+            float left = 0, right = 1, a = 0;
+            if (IntervalValueA != null && IntervalValueB != null)
+            {
+                left = float.Parse(IntervalValueA.Replace(".", ","));
+                right = float.Parse(IntervalValueB.Replace(".", ","));
+            }
+            if (AValue != null)
+            {
+                a = float.Parse(AValue);
+            }
+            
             if (PerformedTemplate != null)
             {
                 for (int i = 0; i < PerformedTemplateList.Count(); i++)
@@ -297,7 +315,15 @@ namespace dms.view_models
                                 }
 
                                 i++;
-                                Dictionary<List<Entity>, services.preprocessing.normalization.IParameter> output = PreprocessingManager.PrepManager.executePreprocessing(newSelectionId, oldSelectionId, oldParamId, prepType, i - 1, entity.ID);
+                                Dictionary<List<Entity>, services.preprocessing.normalization.IParameter> output = PreprocessingManager.PrepManager.executePreprocessing(newSelectionId, 
+                                                                                                                                                                         oldSelectionId,
+                                                                                                                                                                         oldParamId, 
+                                                                                                                                                                         prepType, 
+                                                                                                                                                                         i - 1,
+                                                                                                                                                                         entity.ID,
+                                                                                                                                                                         left,
+                                                                                                                                                                         right,
+                                                                                                                                                                         a);
                                 services.preprocessing.normalization.IParameter p = output.Values.ElementAt(0);
                                 List<Entity> valuesForParameter = output.Keys.ElementAt(0);
                                 continue;
@@ -336,7 +362,15 @@ namespace dms.view_models
                                 preprocessingParametersTemp.Add(ppVM);
                             }
 
-                            Dictionary<List<Entity>, services.preprocessing.normalization.IParameter> output = PreprocessingManager.PrepManager.executePreprocessing(newSelectionId, oldSelectionId, oldParamId, prepType, prepParam.Position, newParamId);
+                            Dictionary<List<Entity>, services.preprocessing.normalization.IParameter> output = PreprocessingManager.PrepManager.executePreprocessing(newSelectionId, 
+                                                                                                                                                                     oldSelectionId, 
+                                                                                                                                                                     oldParamId, 
+                                                                                                                                                                     prepType,
+                                                                                                                                                                     prepParam.Position, 
+                                                                                                                                                                     newParamId, 
+                                                                                                                                                                     left, 
+                                                                                                                                                                     right,
+                                                                                                                                                                     a);
                             services.preprocessing.normalization.IParameter p = output.Values.ElementAt(0);
                             List<Entity> valuesForParameter = output.Keys.ElementAt(0);
                             //->
@@ -356,6 +390,8 @@ namespace dms.view_models
                     list.prepParameters = listOfIParameters;
                     list.parametersValues = listOfValuesForParameter;
                     pp.info.Add(list);
+
+                    new DataHelper().updateTaskTemplate(newTaskTemplateId, pp);
                 }
                 if (parameters != null && types != null)
                 {
@@ -368,7 +404,6 @@ namespace dms.view_models
                     PreprocessingParameters = preprocessingParametersTemp.ToArray();
                 }
             }
-
             OnClose?.Invoke(this, null);
         }
 
@@ -433,6 +468,90 @@ namespace dms.view_models
                 isUsingExitingTemplate = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged("IsUsingNewTemplate");
+            }
+        }
+
+        private string intervalNameA;
+        private string intervalValueA;
+        public string IntervalNameA
+        {
+            get
+            {
+                return intervalNameA;
+            }
+            set
+            {
+                intervalNameA = value;
+                NotifyPropertyChanged("IntervalNameA");
+            }
+        }
+
+        public string IntervalValueA
+        {
+            get
+            {
+                return intervalValueA;
+            }
+            set
+            {
+                intervalValueA = value;
+                NotifyPropertyChanged("IntervalValueA");
+            }
+        }
+
+        private string intervalNameB;
+        private string intervalValueB;
+        public string IntervalNameB
+        {
+            get
+            {
+                return intervalNameB;
+            }
+            set
+            {
+                intervalNameB = value;
+                NotifyPropertyChanged("IntervalNameB");
+            }
+        }
+
+        public string IntervalValueB
+        {
+            get
+            {
+                return intervalValueB;
+            }
+            set
+            {
+                intervalValueB = value;
+                NotifyPropertyChanged("IntervalValueB");
+            }
+        }
+
+        private string aName;
+        private string aValue;
+        public string AName
+        {
+            get
+            {
+                return aName;
+            }
+            set
+            {
+                aName = value;
+                NotifyPropertyChanged("AName");
+            }
+        }
+
+        public string AValue
+        {
+            get
+            {
+                return aValue;
+            }
+            set
+            {
+                aValue = value;
+                NotifyPropertyChanged("AValue");
             }
         }
     }

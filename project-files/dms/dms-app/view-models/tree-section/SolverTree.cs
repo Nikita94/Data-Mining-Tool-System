@@ -16,7 +16,7 @@ namespace dms.view_models
 
         public SolverTree(models.Task task, 
             models.TaskSolver[] per, 
-            models.TaskSolver[] des, 
+            models.TaskSolver[] des,
             models.TaskSolver[] wards, 
             models.TaskSolver[] convnets,
             models.TaskSolver[] kohnets,
@@ -26,7 +26,7 @@ namespace dms.view_models
             Content = new ObservableCollection<TreeSection>
             {
                 new PerceptronTree(task, per, vm),
-                new DecisionTreesTree(task, des, vm),
+                new DecisionTree(task, des, vm),
                 new WardTree(task, wards, vm),
                 new ConvNNTree(task, convnets, vm),
                 new KohonenTree(task, kohnets, vm)

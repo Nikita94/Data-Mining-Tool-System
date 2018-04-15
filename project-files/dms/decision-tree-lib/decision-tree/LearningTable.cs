@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Globalization;
+using dms.solvers.decision.tree.algo;
 
-
-namespace dms.solvers.decision_tree
+namespace dms.solvers.decision.tree
 {
     public class LearningTable
     {
@@ -43,6 +43,17 @@ namespace dms.solvers.decision_tree
             {
                 newClassInfo[i] = new LearningClassInfo();
                 newClassInfo[i].class_name = paramValues[i];
+            }
+
+            for (int i = 0; i < educationTable.LearningData.Length; i++)
+            {
+                foreach (LearningClassInfo clinf in newClassInfo)
+                {
+                    if (clinf.class_name == educationTable.LearningClasses[i])
+                    {
+                        clinf.number_of_checked++;
+                    }
+                }
             }
             return newClassInfo;
         }

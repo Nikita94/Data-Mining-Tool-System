@@ -18,7 +18,7 @@ namespace dms.view_models
         public TaskTree(models.Task task,
             models.Selection[] sel, 
             models.TaskSolver[] per, 
-            models.TaskSolver[] des, 
+            models.TaskSolver[] des,
             models.TaskSolver[] wards, 
             models.TaskSolver[] convnets, 
             models.TaskSolver[] kohnets,

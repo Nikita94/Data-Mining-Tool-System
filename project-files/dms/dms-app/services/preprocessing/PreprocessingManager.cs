@@ -73,9 +73,10 @@ namespace dms.services.preprocessing
             return Preprocessing.PreprocessingObj.addNewEntitiesForPreprocessing(selectionName, countRows, taskTemplateId);
         }
 
-        public Dictionary<List<Entity>, IParameter> executePreprocessing(int newSelectionId, int oldSelectionId, int oldParamId, string prepType, int parameterPosition, int newParamId)
+        public Dictionary<List<Entity>, IParameter> executePreprocessing(int newSelectionId, int oldSelectionId, 
+            int oldParamId, string prepType, int parameterPosition, int newParamId, float left, float right, float a)
         {
-            return Preprocessing.PreprocessingObj.executePreprocessing(newSelectionId, oldSelectionId, oldParamId, prepType, parameterPosition, newParamId);
+            return Preprocessing.PreprocessingObj.executePreprocessing(newSelectionId, oldSelectionId, oldParamId, prepType, parameterPosition, newParamId, left, right, a);
         }
 
         public List<Entity> getNewParametersForBinarizationType(int oldSelectionId, int newTemplateId, int oldParamId)
@@ -134,6 +135,11 @@ namespace dms.services.preprocessing
         {
             List<string> appropriateValues = InversePreprocessing.InversePreprocessingObj.getAppropriateValues(obtainedValues, selectionId, parameterId);
             return InversePreprocessing.InversePreprocessingObj.getAppropriateValuesAfterInversePreprocessing(selectionId, parameterId, appropriateValues);
+        }
+
+        public string getPreprocessingValue(int taskTemplateId, string operation, string value, int index)
+        {
+            return Preprocessing.PreprocessingObj.prepForSolver(taskTemplateId, operation, value, index);
         }
     }
 }

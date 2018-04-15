@@ -47,7 +47,8 @@ namespace dms.services.preprocessing
         }
 
         private List<int> pars = new List<int>();
-        public Dictionary<List<Entity>, IParameter> executePreprocessing(int newSelectionId, int oldSelectionId, int oldParamId, string prepType, int parameterPosition, int newParamId)
+        public Dictionary<List<Entity>, IParameter> executePreprocessing(int newSelectionId, int oldSelectionId, int oldParamId, string prepType, 
+                                                                            int parameterPosition, int newParamId, float left, float right, float a)
         {
             models.Parameter oldParam = ((models.Parameter)DatabaseManager.SharedManager.entityById(oldParamId, typeof(models.Parameter)));
             TypeParameter type;
@@ -73,22 +74,13 @@ namespace dms.services.preprocessing
                     break;
             }
 
-            List<string> values = new List<string>();
-            List<Entity> valueParam = new List<Entity>();
-
             List<Entity> oldSelectionRows = SelectionRow.where(new Query("SelectionRow").addTypeQuery(TypeQuery.select)
                 .addCondition("SelectionID", "=", oldSelectionId.ToString()), typeof(SelectionRow));
-
-            int index = 0;
-            foreach (Entity entity in oldSelectionRows)
+            List<Entity> valueParam = Selection.valueParametersOfColumn(oldSelectionId, oldParamId).ToList();
+            List<string> values = new List<string>();
+            foreach(ValueParameter e in valueParam)
             {
-                int selectionRowId = entity.ID;
-                List<Entity> list = ValueParameter.where(new Query("ValueParameter").addTypeQuery(TypeQuery.select)
-                .addCondition("ParameterID", "=", oldParamId.ToString()).
-                addCondition("SelectionRowID", "=", selectionRowId.ToString()), typeof(ValueParameter));
-                valueParam = valueParam.Concat(list).ToList();
-                values.Add(((ValueParameter)valueParam[index]).Value);
-                index++;
+                values.Add(e.Value);
             }
 
             List<Entity> valuesForParameter = new List<Entity>();
@@ -102,21 +94,36 @@ namespace dms.services.preprocessing
                     if (oldParam.Type == TypeParameter.Real)
                     {
                         p = new RealParameter(values);
+                        p.setRange(left, right);
+                        if (a != 0)
+                        {
+                            p.setParam(a);
+                        }
                         valuesForParameter = normalizeValues(valueParam, p, newParamId, newSelectionId, prepType);
                     }
                     else if (oldParam.Type == TypeParameter.Int)
                     {
                         p = new IntegerParameter(values);
+                        p.setRange(left, right);
+                        if (a != 0)
+                        {
+                            p.setParam(a);
+                        }
                         valuesForParameter = normalizeValues(valueParam, p, newParamId, newSelectionId, prepType);
                     }
                     else if (oldParam.Type == TypeParameter.Enum)
                     {
                         p = new EnumeratedParameter(values);
+                        p.setRange(left, right);
+                        if (a != 0)
+                        {
+                            p.setParam(a);
+                        }
                         valuesForParameter = normalizeValues(valueParam, p, newParamId, newSelectionId, prepType);
                     }
                     break;
                 case "бинаризация":
-                    valuesForParameter = binarizationValues(valueParam, newParamId, newSelectionId, parameterPosition);
+                    valuesForParameter = binarizationValues(valueParam, newParamId, newSelectionId, parameterPosition, left, right, a);
                     break;
                 case "без предобработки":
                     valuesForParameter = processWithoutPreprocessing(valueParam, newParamId, newSelectionId);
@@ -145,7 +152,7 @@ namespace dms.services.preprocessing
             return listValues;
         }
 
-        private List<Entity> binarizationValues(List<Entity> values, int paramId, int newSelectionId, int parameterPosition)
+        private List<Entity> binarizationValues(List<Entity> values, int paramId, int newSelectionId, int parameterPosition, float left, float right, float a)
         {
             DataHelper helper = new DataHelper();
             List<Entity> selectionRows = SelectionRow.where(new Query("SelectionRow").addTypeQuery(TypeQuery.select)
@@ -159,6 +166,11 @@ namespace dms.services.preprocessing
                 valueStr.Add(((ValueParameter)value).Value);
             }
             EnumeratedParameter p = new EnumeratedParameter(valueStr);
+            p.setRange(left, right);
+            if (a != 0)
+            {
+                p.setParam(a);
+            }
 
             int index = 0;
             foreach (string value in valueStr)
@@ -241,6 +253,41 @@ namespace dms.services.preprocessing
             return ((ValueParameter)value).Value;
         }
 
+        public string prepForSolver(int prepTaskTemplateId, string operation, string value, int index)
+        {
+            TaskTemplate template = (TaskTemplate)TaskTemplate.where(new Query("TaskTemplate").addTypeQuery(TypeQuery.select)
+                .addCondition("ID", "=", prepTaskTemplateId.ToString()), typeof(TaskTemplate)).First();
+
+            PreprocessingViewModel.PreprocessingTemplate pp = (PreprocessingViewModel.PreprocessingTemplate)
+                template.PreprocessingParameters;
+            List<services.preprocessing.normalization.IParameter> info = pp.info[0].prepParameters;
+            if (info.Count <= index)
+            {
+                return "";
+            }
+            services.preprocessing.normalization.IParameter p = info[index];
+
+            if (p != null)
+            {
+                switch (operation)
+                {
+                    case "Линейная нормализация 1 (к float)":
+                        return p.GetLinearNormalizedFloat(value).ToString();
+                    case "Нелинейная нормализация 2 (к float)":
+                        return p.GetNonlinearNormalizedFloat(value).ToString();
+                    case "нормализация 3 (к int)":
+                        return p.GetNormalizedInt(value).ToString();
+                    case "бинаризация":
+                        break;
+                    case "без предобработки":
+                        return value;
+                    default:
+                        return "";
+                }
+            }
+
+            return "";
+        }
 
     }
 }

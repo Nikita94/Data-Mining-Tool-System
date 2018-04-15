@@ -6,7 +6,5 @@
              xmlns:local="clr-namespace:dms.gui"
              mc:Ignorable="d" >
     <StackPanel>
-        <Label Content="{Binding Name}" ContentStringFormat="Название дерева: {0}"/>
-        <Label Content="{Binding MaxTreeDepth}" ContentStringFormat="Максимальная глубина дерева: {0}"/>
     </StackPanel>
 </UserControl>

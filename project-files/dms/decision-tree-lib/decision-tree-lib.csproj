@@ -7,7 +7,7 @@
     <ProjectGuid>{33F1E3B3-A234-4FE0-BD5B-FA04AD0C9DD2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dms.solvers.decision_tree</RootNamespace>
+    <RootNamespace>dms.solvers.decision.tree</RootNamespace>
     <AssemblyName>decision-tree-lib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -63,11 +63,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="decision-tree\DecisionTree.cs" />
-    <Compile Include="decision-tree\DecisionTreeLearning.cs" />
-    <Compile Include="decision-tree\GiniCalculator.cs" />
+    <Compile Include="decision-tree\learnign-algos\C4.5\DecisionTreeC4_5LearningAlgo.cs" />
+    <Compile Include="decision-tree\learnign-algos\C4.5\EntrophyCalculator.cs" />
+    <Compile Include="decision-tree\learnign-algos\C4.5\NodeLst.cs" />
+    <Compile Include="decision-tree\learnign-algos\C4.5\TreeBuilder.cs" />
+    <Compile Include="decision-tree\learnign-algos\CART\DecisionTreeLearningCART.cs" />
+    <Compile Include="decision-tree\learnign-algos\CART\GiniCalculator.cs" />
     <Compile Include="decision-tree\LearningClassInfo.cs" />
     <Compile Include="decision-tree\LearningTable.cs" />
+    <Compile Include="decision-tree\DecisionTree.cs" />
+    <Compile Include="decision-tree\learnign-algos\DTLearningAlgo.cs" />
     <Compile Include="decision-tree\Node.cs" />
     <Compile Include="decision-tree\Rule.cs" />
     <Compile Include="decision-tree\TreeDescription.cs" />
